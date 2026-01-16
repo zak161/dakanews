@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="نشرة عربية لمتابعة آخر أخبار الذكاء الاصطناعي من حول العالم. يتم تحديث الأخبار تلقائياً كل 24 ساعة." />
+  <title>نشرة الذكاء الاصطناعي | آخر الأخبار</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="#" aria-label="العودة للرئيسية">
+        <span class="brand__logo" aria-hidden="true">
+          <img src="daka.png" alt="شعار نشرة الذكاء الاصطناعي" />
+        </span>
+        <span class="brand__text">
+          <strong>نشرة الذكاء الاصطناعي</strong>
+          <small>آخر أخبار الذكاء الاصطناعي من حول العالم</small>
+        </span>
+      </a>
+
+      <nav class="nav" aria-label="التنقل الرئيسي">
+        <a href="#latest">الأخبار</a>
+        <a href="#highlights">مختارات</a>
+        <a href="#sources">المصادر</a>
+        <a href="#about">حول النشرة</a>
+      </nav>
+
+      <div class="actions">
+        <button id="themeToggle" class="btn btn--ghost" type="button" aria-label="تبديل الوضع">
+          الوضع الداكن
+        </button>
+        <button id="refreshBtn" class="btn btn--primary" type="button">
+          تحديث الآن
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <h1>ملخص يومي لأهم أخبار الذكاء الاصطناعي</h1>
+          <p class="lead">
+            نعرض لك أحدث الأخبار من مصادر متنوعة، مع ترجمة الأخبار الأجنبية للعربية، وتحديث تلقائي كل <strong>24 ساعة</strong>.
+          </p>
+
+          <div class="meta">
+            <div class="pill" title="وقت آخر تحديث">
+              <span class="pill__label">آخر تحديث:</span>
+              <time id="lastUpdated" class="pill__value">—</time>
+            </div>
+            <div class="pill" title="الوقت المتبقي للتحديث التالي">
+              <span class="pill__label">التحديث التالي بعد:</span>
+              <span id="nextUpdate" class="pill__value">—</span>
+            </div>
+          </div>
+
+          <form id="searchForm" class="search" autocomplete="off">
+            <label class="sr-only" for="searchInput">ابحث عن خبر</label>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="ابحث عن خبر… (مثال: نماذج، روبوتات، تشريعات، أمن)"
+              aria-label="حقل البحث"
+            />
+            <button class="btn btn--primary" type="submit">بحث</button>
+          </form>
+
+          <div class="chips" id="chips" role="tablist" aria-label="تصفية حسب الفئة">
+            <button class="chip is-active" type="button" data-category="all">الكل</button>
+            <button class="chip" type="button" data-category="research">أبحاث</button>
+            <button class="chip" type="button" data-category="companies">شركات</button>
+            <button class="chip" type="button" data-category="products">منتجات</button>
+            <button class="chip" type="button" data-category="policy">تشريعات</button>
+            <button class="chip" type="button" data-category="security">أمان</button>
+          </div>
+        </div>
+
+        <aside class="card subscribe" id="subscribe" aria-label="الاشتراك في النشرة">
+          <div class="subscribe__head">
+            <h2>احفظ بريدك للاشتراك</h2>
+            <p>لتسهيل العودة ومتابعة الأخبار من نفس الجهاز.</p>
+          </div>
+
+          <form id="subscribeForm" class="subscribe__form">
+            <label for="emailInput">البريد الإلكتروني</label>
+            <div class="input-row">
+              <input
+                id="emailInput"
+                type="email"
+                placeholder="name@example.com"
+                required
+                inputmode="email"
+                autocomplete="email"
+              />
+              <button class="btn btn--primary" type="submit">حفظ</button>
+            </div>
+            <p class="note">سيتم حفظ البريد على هذا الجهاز فقط.</p>
+          </form>
+
+          <div class="mini-stats" aria-label="إحصاءات سريعة">
+            <div class="mini-stat">
+              <span id="totalCount" class="mini-stat__value">0</span>
+              <small class="mini-stat__label">خبر</small>
+            </div>
+            <div class="mini-stat">
+              <span id="sourceCount" class="mini-stat__value">0</span>
+              <small class="mini-stat__label">مصدر</small>
+            </div>
+            <div class="mini-stat">
+              <span id="cachedBadge" class="mini-stat__value">—</span>
+              <small class="mini-stat__label">الحالة</small>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="latest" class="section">
+      <div class="container section__head">
+        <h2>آخر الأخبار</h2>
+
+        <div class="sort">
+          <label for="sortSelect">ترتيب:</label>
+          <select id="sortSelect" aria-label="ترتيب الأخبار">
+            <option value="new">الأحدث أولاً</option>
+            <option value="old">الأقدم أولاً</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="container">
+        <div id="status" class="status" role="status" aria-live="polite">جارٍ التحميل…</div>
+        <div id="newsGrid" class="grid" aria-label="شبكة الأخبار"></div>
+      </div>
+    </section>
+
+    <section id="highlights" class="section section--alt">
+      <div class="container section__head">
+        <h2>مختارات اليوم</h2>
+        <p class="muted">أبرز 3 أخبار من أحدث التحديثات.</p>
+      </div>
+      <div class="container">
+        <div id="highlightsGrid" class="grid grid--highlights" aria-label="مختارات اليوم"></div>
+      </div>
+    </section>
+
+    <section id="sources" class="section">
+      <div class="container section__head">
+        <h2>المصادر</h2>
+        <p class="muted">نستعرض مصادر الأخبار المعتمدة في النشرة.</p>
+      </div>
+      <div class="container sources">
+        <ul id="sourceList" class="source-list" aria-label="قائمة المصادر"></ul>
+      </div>
+    </section>
+
+    <section id="about" class="section section--alt">
+      <div class="container section__head">
+        <h2>حول النشرة</h2>
+        <p class="muted">
+          هدفنا تقديم تجربة قراءة سريعة وواضحة لأخبار الذكاء الاصطناعي، مع تصميم عربي حديث يركز على سهولة التصفح.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <strong>نشرة الذكاء الاصطناعي</strong>
+        <div class="muted">أبيض + عنابي • تحديث تلقائي كل 24 ساعة</div>
+      </div>
+      <div class="footer__links">
+        <a href="#subscribe">الاشتراك</a>
+        <a href="#latest">الأخبار</a>
+        <a href="#sources">المصادر</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
